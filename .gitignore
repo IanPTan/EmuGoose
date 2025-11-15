@@ -4,4 +4,4 @@ venv
 .env.local
 .env
 devtools
-data/
+data
