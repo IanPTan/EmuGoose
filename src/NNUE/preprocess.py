@@ -33,8 +33,8 @@ if __name__ == "__main__":
     print(f"Preprocessing {dataset_size} boards...")
 
     with hp.File(output_dataset_path, "w") as f, open(fen_dataset_path, "r") as data_file:
-        board_dataset = f.create_dataset("board", (dataset_size, 768), dtype=np.float32)
-        eval_dataset = f.create_dataset("eval", (dataset_size,), dtype=np.float32)
+        board_dataset = f.create_dataset("board", (dataset_size, 768), dtype=np.bool)
+        eval_dataset = f.create_dataset("eval", (dataset_size,), dtype=np.float16)
 
         for i, line in tqdm(enumerate(data_file), total=dataset_size, unit="boards", desc="Processing..."):
             row = json.loads(line)
