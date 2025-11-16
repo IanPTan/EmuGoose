@@ -1,10 +1,11 @@
 from .utils import chess_manager, GameContext
 from .utils.board import make_nnue, GameState
-from .utils.search import minimax
+from .utils.search import minimax, alphabeta
 import torch as pt
 from chess import Move
 import random
 import time
+import math
 
 # Write code here that runs once
 # Can do things like load models from huggingface, make connections to subprocesses, etcwenis
@@ -37,7 +38,8 @@ def test_func(ctx: GameContext):
     """
     
     gamestate = GameState(nnue, ctx.board.copy())
-    eval, move = minimax(gamestate, 2)
+    #eval, move = minimax(gamestate, 2)
+    eval, move = alphabeta(gamestate, 3, -math.inf, math.inf)
     print(eval)
 
     return move
