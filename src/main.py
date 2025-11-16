@@ -1,6 +1,6 @@
 from .utils import chess_manager, GameContext
 from .utils.board import make_nnue, GameState
-from .utils.search import iterative_search
+from .utils.search import alphabeta
 import torch as pt
 from chess import Move
 import random
@@ -36,8 +36,9 @@ def test_func(ctx: GameContext):
     }
     ctx.logProbabilities(move_probs)
     """
-
-    eval, move = iterative_search(ctx.board, nnue, max_depth=3)
+    
+    gamestate = GameState(nnue, ctx.board.copy())
+    eval, move = alphabeta(gamestate, 3, -math.inf, math.inf)
     print(eval)
 
     return move
