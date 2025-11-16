@@ -20,3 +20,5 @@ pandas
 torch
 h5py
 tqdm
+onnxruntime
+onnxscript:w
