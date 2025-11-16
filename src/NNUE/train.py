@@ -31,7 +31,7 @@ model = NNUE().to(device)
 try:
     model.load(MODEL_SAVE_PATH)
     print("Loaded saved model, continuing training.")
-except FileNotFoundError:
+except:
     print("No compatible saved model found, starting fresh.")
 
 criterion = nn.MSELoss()
