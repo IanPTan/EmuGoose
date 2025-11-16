@@ -16,5 +16,5 @@ class SFDS(Dataset):
 
     def __getitem__(self, idx):
         board_state = pt.tensor(self.boards[idx], dtype=pt.float32)
-        evaluation = pt.tensor(self.evals[idx] / 2, dtype=pt.float32)
+        evaluation = pt.tensor([self.evals[idx] / 2], dtype=pt.float32)
         return board_state, evaluation
