@@ -27,7 +27,7 @@ train_dataset, val_dataset = pt.utils.data.random_split(dataset, [train_size, va
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4)
 val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=4)
 
-model = NNUE().to(device)
+model = NNUE([512]).to(device)
 try:
     model.load(MODEL_SAVE_PATH)
     print("Loaded saved model, continuing training.")
