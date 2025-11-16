@@ -1,6 +1,6 @@
 from .utils import chess_manager, GameContext
 from .utils.board import make_nnue, GameState
-from .utils.search import minimax, alphabeta
+from .utils.search import iterative_search
 import torch as pt
 from chess import Move
 import random
@@ -9,7 +9,7 @@ import math
 
 # Write code here that runs once
 # Can do things like load models from huggingface, make connections to subprocesses, etcwenis
-nnue = make_nnue("src/NNUE/models/nnue.pth")
+nnue = make_nnue("src/NNUE/models/nnue.onnx")
 
 
 @chess_manager.entrypoint
@@ -36,10 +36,8 @@ def test_func(ctx: GameContext):
     }
     ctx.logProbabilities(move_probs)
     """
-    
-    gamestate = GameState(nnue, ctx.board.copy())
-    #eval, move = minimax(gamestate, 2)
-    eval, move = alphabeta(gamestate, 3, -math.inf, math.inf)
+
+    eval, move = iterative_search(ctx.board, nnue, max_depth=3)
     print(eval)
 
     return move

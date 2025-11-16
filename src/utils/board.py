@@ -1,14 +1,24 @@
 import torch as pt
 import chess
-from ..NNUE.model import NNUE
-from ..utils.data import encode_board
+import onnxruntime as ort
+try:
+    from ..utils.data import encode_board
+except:
+    from utils.data import encode_board
 
 
-def make_nnue(nnue_path, config=[512, 32, 32]):
-    nnue = NNUE(config)
-    nnue.load(nnue_path)
-    nnue.eval()
-    return nnue
+def make_nnue(onnx_path):
+    session = ort.InferenceSession(onnx_path)
+    return session
+
+
+def batch_encode(boards):
+    encodings = []
+    for board in boards:
+        encodings.append(encode_board(board))
+    
+    encodings = pt.stack(encodings).view(-1, 768)
+    return encodings
 
 
 class GameState:
@@ -26,8 +36,10 @@ class GameState:
             self.wdl = 1 if outcome.winner == chess.WHITE else 0 if outcome.winner == chess.BLACK else 0.5
             return self.wdl
         
-        encoding = encode_board(self.board).view(1, -1)
-        self.wdl = self.nnue(encoding, sigmoid=False).item()
+        encoding = encode_board(self.board).view(1, -1).numpy()
+        # The model was exported with sigmoid, so we get the raw score.
+        # The output from ONNX is a list of arrays.
+        self.wdl = self.nnue.run(['output'], {'input': encoding})[0][0][0]
 
         return self.wdl
     
