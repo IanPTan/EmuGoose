@@ -29,11 +29,19 @@ class NNUE(nn.Module):
         self.relu = nn.ReLU()
         self.sigmoid = nn.Sigmoid()
 
-    def forward(self, x):
+    def forward(self, x, sigmoid=True):
         acm1 = self.acm_linear(x)
         acm2 = self.acm_linear(vertical_flip(x))
         acm = pt.cat((acm1, acm2), dim=1)
         x = self.relu(acm)
         x = self.layers(x)
-        x = self.sigmoid(x)
+        if sigmoid:
+            x = self.sigmoid(x)
         return x
+
+    def save(self, path):
+        pt.save(self.state_dict(), path)
+
+    def load(self, path):
+        device = next(self.parameters()).device
+        self.load_state_dict(pt.load(path, map_location=device))

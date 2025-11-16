@@ -1,5 +1,6 @@
 from .utils import chess_manager, GameContext
-from .utils.data import encode_board
+from .utils.board import make_nnue, GameState
+from .utils.search import minimax
 import torch as pt
 from chess import Move
 import random
@@ -7,6 +8,7 @@ import time
 
 # Write code here that runs once
 # Can do things like load models from huggingface, make connections to subprocesses, etcwenis
+nnue = make_nnue("src/NNUE/models/nnue.pth")
 
 
 @chess_manager.entrypoint
@@ -18,9 +20,7 @@ def test_func(ctx: GameContext):
     print(ctx.board.move_stack)
     time.sleep(0.1)
 
-    board_encoding = encode_board(ctx.board)
-    print(board_encoding)
-
+    """
     legal_moves = list(ctx.board.generate_legal_moves())
     if not legal_moves:
         ctx.logProbabilities({})
@@ -34,8 +34,13 @@ def test_func(ctx: GameContext):
         for move, weight in zip(legal_moves, move_weights)
     }
     ctx.logProbabilities(move_probs)
+    """
+    
+    gamestate = GameState(nnue, ctx.board.copy())
+    eval, move = minimax(gamestate, 2)
+    print(eval)
 
-    return random.choices(legal_moves, weights=move_weights, k=1)[0]
+    return move
 
 
 @chess_manager.reset

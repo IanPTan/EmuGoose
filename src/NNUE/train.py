@@ -3,15 +3,15 @@ from torch.utils.data import DataLoader
 from torch import optim, nn
 from tqdm import tqdm
 
-from model import NNUE
-from dataset import SFDS
+from NNUE.model import NNUE
+from NNUE.dataset import SFDS
 
 # --- Hyperparameters ---
 EPOCHS = 10
 BATCH_SIZE = 1024
 LEARNING_RATE = 0.001
 DATASET_PATH = "NNUE/data/dataset.h5"
-MODEL_SAVE_PATH = "NNUE/model/backup.pth"
+MODEL_SAVE_PATH = "NNUE/models/backup.pth"
 VALIDATION_SPLIT = 0.2
 
 # --- Setup ---
@@ -29,7 +29,7 @@ val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False, num_w
 
 model = NNUE().to(device)
 try:
-    model.load_state_dict(pt.load(MODEL_SAVE_PATH))
+    model.load(MODEL_SAVE_PATH)
     print("Loaded saved model, continuing training.")
 except FileNotFoundError:
     print("No compatible saved model found, starting fresh.")
@@ -55,7 +55,7 @@ for epoch in range(EPOCHS):
         progress_bar.set_postfix_str(f"L={loss.item():.4f}")
 
     avg_train_loss = running_loss / len(train_loader)
-    pt.save(model.state_dict(), MODEL_SAVE_PATH)
+    model.save(MODEL_SAVE_PATH)
 
     model.eval()
     val_loss = 0.0
@@ -67,4 +67,3 @@ for epoch in range(EPOCHS):
             val_loss += loss.item()
     avg_val_loss = val_loss / len(val_loader)
     print(f"Epoch {epoch + 1} Avg Train Loss: {avg_train_loss:.4f}, Avg Val Loss: {avg_val_loss:.4f}")
-
