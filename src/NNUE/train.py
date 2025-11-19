@@ -7,7 +7,7 @@ from NNUE.model import NNUE
 from NNUE.dataset import SFDS
 
 # --- Hyperparameters ---
-EPOCHS = 10
+EPOCHS = 1
 BATCH_SIZE = 1024
 LEARNING_RATE = 0.001
 DATASET_PATH = "NNUE/data/dataset.h5"

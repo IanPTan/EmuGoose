@@ -38,7 +38,7 @@ def test_func(ctx: GameContext):
     """
     
     gamestate = GameState(nnue, ctx.board.copy())
-    eval, move = alphabeta(gamestate, 4, -math.inf, math.inf)
+    eval, move = alphabeta(gamestate, 2, -math.inf, math.inf)
     print(eval)
 
     return move

@@ -20,21 +20,18 @@ class NNUE(nn.Module):
         self.acm_linear = nn.Linear(768, layer_sizes[0] // 2)
         
         self.layers = nn.Sequential()
+        layer_sizes.append(1)
         for i in range(len(layer_sizes) - 1):
-            self.layers.add_module(f"linear_{i}", nn.Linear(layer_sizes[i], layer_sizes[i+1]))
             self.layers.add_module(f"relu_{i}", nn.ReLU())
+            self.layers.add_module(f"linear_{i}", nn.Linear(layer_sizes[i], layer_sizes[i+1]))
         
-        self.layers.add_module("output", nn.Linear(layer_sizes[-1], 1))
-        
-        self.relu = nn.ReLU()
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x, sigmoid=True):
         acm1 = self.acm_linear(x)
         acm2 = self.acm_linear(vertical_flip(x))
         acm = pt.cat((acm1, acm2), dim=1)
-        x = self.relu(acm)
-        x = self.layers(x)
+        x = self.layers(acm)
         if sigmoid:
             x = self.sigmoid(x)
         return x
