@@ -42,3 +42,6 @@ class NNUE(nn.Module):
     def load(self, path):
         device = next(self.parameters()).device
         self.load_state_dict(pt.load(path, map_location=device))
+
+
+
